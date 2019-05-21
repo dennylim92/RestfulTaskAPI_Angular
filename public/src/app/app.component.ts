@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from './http.service';
 
@@ -7,47 +8,17 @@ import { HttpService } from './http.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  mainTitle = 'Restful Tasks API';
+  getAllTasks = 'Get All Tasks';
   tasks: any = [];
   gotTasks = false;
+  showButton = 'SHOW';
   singleTask: any;
-  newTask: any;
-  task: any;
-  editSingleTask = false;
-  editTask: any;
-
+  gotSingleTask = false;
   constructor(private _httpService: HttpService) {}
 
   ngOnInit() {
-    this.editTask = { title: '', description: ''};
-    this.newTask = { title: '', description: ''};
-    this.getTaskFromService();
-  }
 
-  createTask() {
-    const createTask = this._httpService.addTask(this.newTask);
-    createTask.subscribe(data => {
-      this.newTask = { title: '', description: ''};
-      this.getTaskFromService();
-    });
-  }
-
-  showEdit(id) {
-    console.log(id);
-    const showEdit = this._httpService.showEdit(id);
-    showEdit.subscribe(data => {
-      this.singleTask = data[0];
-      this.editTask = data[0];
-      this.editSingleTask = true;
-    });
-  }
-
-  updateTask(id) {
-    const editTask = this._httpService.editTask(id, this.editTask);
-    editTask.subscribe(data => {
-      this.editSingleTask = false;
-      this.editTask = { title: '', description: ''};
-      this.getTaskFromService();
-    });
   }
 
   getTaskFromService() {
@@ -55,14 +26,18 @@ export class AppComponent implements OnInit {
     allTasks.subscribe(data => {
       this.tasks = data;
       this.gotTasks = true;
+      this.gotSingleTask = false;
     });
   }
 
-  deleteTask(id) {
-    const deleteTask = this._httpService.removeTask(id);
-    deleteTask.subscribe(data => {
-      this.getTaskFromService();
+  getSingleTask(id) {
+    console.log(id);
+    const singleTask = this._httpService.getTask(id);
+    singleTask.subscribe(data => {
+      this.singleTask = data[0];
+      this.gotSingleTask = true;
+      this.gotTasks = false;
     });
-  }
 
+  }
 }
